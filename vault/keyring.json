@@ -1,0 +1,21 @@
+{
+  "format": "jma-vault",
+  "version": 1,
+  "cipher": "AES-256-GCM, llave envuelta con PBKDF2-SHA256",
+  "slots": [
+    {
+      "id": "shared",
+      "kdf": {
+        "name": "PBKDF2",
+        "hash": "SHA-256",
+        "iterations": 600000,
+        "salt": "t995Fvh9tC6wFf/+dKAxxQ=="
+      },
+      "wrap": {
+        "name": "AES-GCM",
+        "iv": "naeoUKbwU8obEH1G",
+        "data": "4HvEfTFP8K/NSgFpLiueit8d7tORLABd7n25wJ3OUlTzsUNDwapxQpN/CgR2SsiR+hg/mVJqy034H384lQLX9VzJoe7umjnjqwyacnDmbCtZbfxfIkBsxOmr"
+      }
+    }
+  ]
+}
