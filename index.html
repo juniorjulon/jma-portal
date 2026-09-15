@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b201b">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Junior's Market Analysis</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/vendor/marked.umd.js" defer></script>
+  <script src="assets/vendor/purify.min.js" defer></script>
+  <script type="module" src="assets/js/app.js"></script>
+</head>
+<body class="is-locked">
+  <section class="lock-screen" id="lockScreen" aria-labelledby="lockTitle">
+    <div class="lock-backdrop" aria-hidden="true">
+      <span class="market-line market-line-one"></span>
+      <span class="market-line market-line-two"></span>
+      <span class="market-orb market-orb-one"></span>
+      <span class="market-orb market-orb-two"></span>
+    </div>
+
+    <div class="lock-card">
+      <div class="brand-mark brand-mark-large" aria-hidden="true">
+        <span>J</span>
+        <i></i>
+      </div>
+      <p class="eyebrow">PRIVATE RESEARCH PORTAL</p>
+      <h1 id="lockTitle">Junior's Market Analysis</h1>
+      <p class="lock-intro" id="lockIntro">Ingresa la clave de acceso. El contenido está cifrado: sin la clave, esta página no tiene nada que mostrar.</p>
+
+      <form class="access-form" id="accessForm" novalidate>
+        <label for="accessCode">Clave de acceso</label>
+        <div class="code-field">
+          <input
+            id="accessCode"
+            name="accessCode"
+            type="password"
+            autocomplete="current-password"
+            spellcheck="false"
+            maxlength="200"
+            aria-describedby="accessMessage capsHint"
+            required
+          >
+          <button class="visibility-button" id="toggleCode" type="button" aria-pressed="false">Mostrar</button>
+        </div>
+        <p class="caps-hint" id="capsHint" hidden>Bloq Mayús está activado.</p>
+        <button class="unlock-button" id="unlockButton" type="submit">
+          <span>Descifrar y entrar</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="access-message" id="accessMessage" role="alert" aria-live="polite"></p>
+      </form>
+
+      <div class="setup-block">
+        <button class="link-button" id="setupToggle" type="button" aria-expanded="false" aria-controls="setupPanel" hidden>
+          Configurar la bóveda (administrador)
+        </button>
+
+        <form class="setup-panel" id="setupPanel" hidden novalidate>
+          <p class="setup-note">
+            Crea la bóveda cifrada dentro de este repositorio. Necesitas un token de GitHub
+            <strong>fine grained</strong> con permiso <strong>Contents: Read and write</strong> sobre él.
+          </p>
+          <div class="field-group">
+            <label for="setupToken">Token de GitHub</label>
+            <input id="setupToken" type="password" autocomplete="off" spellcheck="false" maxlength="400" placeholder="github_pat_...">
+          </div>
+          <div class="field-group">
+            <label for="setupPassword">Clave de acceso nueva</label>
+            <input id="setupPassword" type="password" autocomplete="new-password" spellcheck="false" maxlength="200">
+          </div>
+          <div class="field-group">
+            <label for="setupPasswordConfirm">Repite la clave</label>
+            <input id="setupPasswordConfirm" type="password" autocomplete="new-password" spellcheck="false" maxlength="200">
+          </div>
+          <button class="link-button" id="generatePassword" type="button">Generar una clave segura</button>
+          <p class="generated-key" id="generatedKey" hidden></p>
+          <button class="unlock-button" id="setupSubmit" type="submit"><span>Crear bóveda</span><span aria-hidden="true">→</span></button>
+          <p class="access-message" id="setupMessage" role="alert" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="lock-meta">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="lockMetaText">Cifrado AES-256 en el navegador · Sin cuentas de usuario</span>
+      </div>
+      <noscript>Este portal necesita JavaScript para descifrar el contenido en tu navegador.</noscript>
+    </div>
+  </section>
+
+  <div class="portal-shell" id="portal" hidden inert>
+    <header class="site-header">
+      <a class="site-brand" href="#top" aria-label="Ir al inicio">
+        <span class="brand-mark" aria-hidden="true"><span>J</span><i></i></span>
+        <span>
+          <strong>Junior's Market Analysis</strong>
+          <small id="headerOwner">Name</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="#documents">Documentos</a>
+        <a href="#upload">Guardar</a>
+        <a href="#admin">Administración</a>
+      </nav>
+
+      <button class="logout-button" id="logoutButton" type="button">
+        <span aria-hidden="true">↗</span>
+        Cerrar sesión
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero-section" aria-labelledby="heroTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">MARKET INTELLIGENCE · PRIVATE ACCESS</p>
+          <h1 id="heroTitle" tabindex="-1">Research, data and<br><em>investment insight.</em></h1>
+          <p class="hero-description">
+            Documentos, hojas de cálculo, presentaciones e imágenes guardados cifrados. Se descifran en tu
+            navegador solo con la clave y quedan registrados con fecha y autor.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#documents">Explorar documentos</a>
+            <span class="owner-line">Prepared by <strong id="heroOwner">Name</strong></span>
+          </div>
+        </div>
+
+        <aside class="market-panel" aria-label="Resumen de la bóveda">
+          <div class="panel-header">
+            <span>Encrypted vault</span>
+            <span class="live-label"><i></i> AES-256</span>
+          </div>
+          <div class="market-visual" aria-hidden="true">
+            <div class="axis axis-one"></div>
+            <div class="axis axis-two"></div>
+            <div class="axis axis-three"></div>
+            <svg viewBox="0 0 520 190" role="img" aria-label="Gráfico decorativo de mercado">
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#a5ef93" stop-opacity="0.34"></stop>
+                  <stop offset="1" stop-color="#a5ef93" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <path class="chart-area" d="M0,155 C40,146 55,155 91,128 C125,102 148,123 181,95 C217,64 247,86 278,72 C322,52 348,69 382,39 C417,10 455,38 520,5 L520,190 L0,190 Z"></path>
+              <path class="chart-line" d="M0,155 C40,146 55,155 91,128 C125,102 148,123 181,95 C217,64 247,86 278,72 C322,52 348,69 382,39 C417,10 455,38 520,5"></path>
+            </svg>
+          </div>
+          <div class="panel-metrics">
+            <div><span>Entradas</span><strong id="metricEntries">00</strong></div>
+            <div><span>Archivos</span><strong id="metricFiles">00</strong></div>
+            <div><span>Aportes</span><strong id="metricContributions">00</strong></div>
+          </div>
+          <p class="catalog-updated" id="catalogUpdated">Bóveda sin actualizaciones registradas</p>
+        </aside>
+      </section>
+
+      <section class="stats-strip" aria-label="Estadísticas de la bóveda">
+        <article>
+          <span class="stat-number" id="statEntries">00</span>
+          <span class="stat-label">Entradas</span>
+        </article>
+        <article>
+          <span class="stat-number" id="statFiles">00</span>
+          <span class="stat-label">Archivos guardados</span>
+        </article>
+        <article>
+          <span class="stat-number" id="statLibrary">00</span>
+          <span class="stat-label">Biblioteca</span>
+        </article>
+        <article>
+          <span class="stat-number" id="statContributions">00</span>
+          <span class="stat-label">Aportes recibidos</span>
+        </article>
+      </section>
+
+      <section class="documents-section" id="documents" aria-labelledby="documentsTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow dark">SHARED DOCUMENTS</p>
+            <h2 id="documentsTitle">Research library</h2>
+            <p id="documentsIntro">Cada entrada guarda su fecha, quién la guardó y sus archivos. Todo se descifra al momento de abrirlo.</p>
+          </div>
+          <label class="search-box" for="documentSearch">
+            <span aria-hidden="true">⌕</span>
+            <input id="documentSearch" type="search" placeholder="Buscar por título, autor o archivo…" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="catalog-toolbar">
+          <div class="filter-list" id="filterList" aria-label="Filtrar documentos">
+            <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true">Todos</button>
+            <button class="filter-button" type="button" data-filter="library" aria-pressed="false">Biblioteca</button>
+            <button class="filter-button" type="button" data-filter="contribution" aria-pressed="false">Aportes</button>
+            <button class="filter-button" type="button" data-filter="word" aria-pressed="false">Word</button>
+            <button class="filter-button" type="button" data-filter="excel" aria-pressed="false">Excel</button>
+            <button class="filter-button" type="button" data-filter="powerpoint" aria-pressed="false">PowerPoint</button>
+            <button class="filter-button" type="button" data-filter="pdf" aria-pressed="false">PDF</button>
+            <button class="filter-button" type="button" data-filter="image" aria-pressed="false">Imágenes</button>
+          </div>
+          <div class="toolbar-actions">
+            <span class="result-count" id="resultCount" aria-live="polite">0 entradas</span>
+            <button class="ghost-button" id="refreshCatalog" type="button">Actualizar</button>
+            <button class="ghost-button" id="exportRegistry" type="button">Descargar registro CSV</button>
+          </div>
+        </div>
+
+        <div class="documents-grid" id="documentsGrid"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <span aria-hidden="true">∅</span>
+          <h3 id="emptyTitle">Todavía no hay nada guardado</h3>
+          <p id="emptyText">Usa la sección Guardar para subir el primer documento.</p>
+        </div>
+      </section>
+
+      <section class="intake-section" id="upload" aria-labelledby="uploadTitle">
+        <div class="intake-copy">
+          <p class="eyebrow" id="uploadEyebrow">ENCRYPTED UPLOAD</p>
+          <h2 id="uploadTitle">Guardar documentos, capturas y notas</h2>
+          <p id="uploadDescription">
+            Word, Excel, PowerPoint, PDF, imágenes y texto. Cada archivo se cifra en este navegador antes de
+            salir y se guarda con la fecha y el nombre de quien lo subió.
+          </p>
+          <div class="privacy-note">
+            <span aria-hidden="true">◎</span>
+            <div>
+              <strong id="privacyTitle">Cifrado antes de enviar</strong>
+              <p id="privacyDescription">
+                GitHub almacena únicamente el resultado cifrado. Ni el nombre del archivo ni su contenido
+                viajan legibles, y las fotos JPG pueden enviarse sin metadatos de ubicación.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <form class="intake-form" id="uploadForm" novalidate>
+          <p class="upload-notice" id="uploadNotice" hidden></p>
+
+          <fieldset class="destination-group" id="destinationGroup" hidden>
+            <legend>Dónde guardar</legend>
+            <label class="radio-row">
+              <input type="radio" name="destination" id="destinationLibrary" value="library" checked>
+              <span>Biblioteca oficial</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="destination" id="destinationContribution" value="contribution">
+              <span>Aportes</span>
+            </label>
+          </fieldset>
+
+          <div class="field-group">
+            <label for="uploadAuthor">Tu nombre</label>
+            <input id="uploadAuthor" name="author" type="text" maxlength="80" autocomplete="name" placeholder="Quién guarda esta información">
+          </div>
+          <div class="field-group">
+            <label for="uploadTitleField">Título</label>
+            <input id="uploadTitleField" name="title" type="text" maxlength="140" placeholder="Ej. Comentarios del comité de inversiones">
+          </div>
+          <div class="field-group">
+            <div class="field-label-row">
+              <label for="uploadText">Texto</label>
+              <span id="characterCount">0 / 20,000</span>
+            </div>
+            <textarea id="uploadText" name="text" maxlength="20000" rows="7" placeholder="Escribe o pega aquí la información. También puedes pegar capturas de pantalla con Ctrl+V."></textarea>
+          </div>
+
+          <label class="drop-zone" id="dropZone" for="fileInput">
+            <input id="fileInput" name="files" type="file" multiple>
+            <span class="drop-icon" aria-hidden="true">＋</span>
+            <strong>Arrastra archivos o selecciónalos</strong>
+            <small id="dropHint">Word, Excel, PowerPoint, PDF, CSV, texto e imágenes</small>
+          </label>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="stripMetadata" checked>
+            <span>Quitar ubicación y metadatos de las fotos JPG</span>
+          </label>
+
+          <div class="image-preview-grid" id="filePreviewGrid" aria-live="polite"></div>
+          <p class="intake-message" id="uploadMessage" role="status" aria-live="polite"></p>
+          <progress class="upload-progress" id="uploadProgress" max="100" value="0" hidden></progress>
+
+          <div class="intake-actions">
+            <button class="secondary-action" id="clearUpload" type="button">Limpiar</button>
+            <button class="primary-action button-reset" id="submitUpload" type="submit">Guardar cifrado</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-section" id="admin" aria-labelledby="adminTitle">
+        <h2 id="adminTitle">Administración</h2>
+        <p class="admin-intro">
+          Solo para quien administra el repositorio. Requiere un token de GitHub propio; el token se queda
+          en este navegador y nunca se publica.
+        </p>
+
+        <details class="admin-details" id="adminDetails">
+          <summary>Abrir panel de administración</summary>
+
+          <div class="admin-grid">
+            <form class="admin-card" id="adminTokenForm" novalidate>
+              <h3>1. Conectar token</h3>
+              <p class="admin-status" id="adminStatus">Sin conectar. Solo puedes leer.</p>
+              <div class="field-group">
+                <label for="adminToken">Token con Contents: Read and write</label>
+                <input id="adminToken" type="password" autocomplete="off" spellcheck="false" maxlength="400" placeholder="github_pat_...">
+              </div>
+              <label class="checkbox-row">
+                <input type="checkbox" id="adminRemember">
+                <span>Recordar en este dispositivo</span>
+              </label>
+              <div class="admin-actions">
+                <button class="primary-action button-reset" id="adminConnect" type="submit">Conectar</button>
+                <button class="secondary-action" id="adminDisconnect" type="button">Desconectar</button>
+              </div>
+              <p class="intake-message" id="adminMessage" role="status" aria-live="polite"></p>
+            </form>
+
+            <form class="admin-card" id="contributionsForm" novalidate>
+              <h3>2. Etapa 2: recibir aportes</h3>
+              <p class="admin-hint">
+                Repositorio aparte donde cualquiera con la clave podrá guardar. Su token queda cifrado dentro
+                de la bóveda y solo se descifra con la clave de acceso.
+              </p>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="contributionOwner">Usuario u organización</label>
+                  <input id="contributionOwner" type="text" maxlength="39" spellcheck="false" placeholder="juniorjulon">
+                </div>
+                <div class="field-group">
+                  <label for="contributionRepo">Repositorio</label>
+                  <input id="contributionRepo" type="text" maxlength="100" spellcheck="false" placeholder="jma-aportes">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="contributionBranch">Rama</label>
+                  <input id="contributionBranch" type="text" maxlength="100" spellcheck="false" value="main">
+                </div>
+                <div class="field-group">
+                  <label for="contributionToken">Token solo de ese repositorio</label>
+                  <input id="contributionToken" type="password" autocomplete="off" spellcheck="false" maxlength="400" placeholder="github_pat_...">
+                </div>
+              </div>
+              <div class="admin-actions">
+                <button class="primary-action button-reset" id="contributionsSave" type="submit">Activar aportes</button>
+                <button class="secondary-action" id="contributionsDisable" type="button">Desactivar</button>
+              </div>
+              <p class="intake-message" id="contributionsMessage" role="status" aria-live="polite"></p>
+            </form>
+
+            <form class="admin-card" id="passwordForm" novalidate>
+              <h3>3. Cambiar la clave de acceso</h3>
+              <p class="admin-hint">
+                Genera una llave de cifrado nueva: quien conocía la clave anterior deja de leer lo que se
+                guarde desde ahora. Lo ya publicado siguió siendo visible para quien lo descargó.
+              </p>
+              <div class="field-group">
+                <label for="newPassword">Clave nueva</label>
+                <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false" maxlength="200">
+              </div>
+              <div class="field-group">
+                <label for="newPasswordConfirm">Repite la clave nueva</label>
+                <input id="newPasswordConfirm" type="password" autocomplete="new-password" spellcheck="false" maxlength="200">
+              </div>
+              <button class="link-button" id="generateNewPassword" type="button">Generar una clave segura</button>
+              <p class="generated-key" id="generatedNewKey" hidden></p>
+              <div class="admin-actions">
+                <button class="primary-action button-reset" id="changePasswordButton" type="submit">Cambiar clave</button>
+              </div>
+              <p class="intake-message" id="passwordMessage" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-brand footer-brand">
+        <span class="brand-mark" aria-hidden="true"><span>J</span><i></i></span>
+        <span><strong>Junior's Market Analysis</strong><small>Private research portal</small></span>
+      </div>
+      <p>Contenido cifrado de extremo a extremo. GitHub guarda solo el resultado cifrado.</p>
+      <span id="footerYear"></span>
+    </footer>
+  </div>
+
+  <dialog class="document-dialog" id="documentDialog" aria-labelledby="viewerTitle">
+    <div class="dialog-shell">
+      <header class="dialog-header">
+        <div>
+          <div class="viewer-meta"><span id="viewerType">Entrada</span><span id="viewerTopic">Biblioteca</span></div>
+          <h2 id="viewerTitle">Documento</h2>
+        </div>
+        <div class="dialog-actions">
+          <button class="dialog-close" id="closeViewer" type="button" aria-label="Cerrar">×</button>
+        </div>
+      </header>
+      <div class="viewer-loading" id="viewerLoading" role="status" hidden>Descifrando…</div>
+      <article class="markdown-body" id="viewerBody"></article>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
