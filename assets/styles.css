@@ -822,12 +822,18 @@ code {
   height: 31px;
   align-items: center;
   justify-content: center;
+  padding: 0 7px;
   border-radius: 8px;
   background: var(--mint-pale);
   color: #2e6b52;
   font-size: 0.66rem;
   font-weight: 850;
   letter-spacing: 0.05em;
+}
+
+.file-badge.is-risky {
+  background: #fbeaea;
+  color: #a63f3f;
 }
 
 .document-card[data-type="spreadsheet"] .file-badge {

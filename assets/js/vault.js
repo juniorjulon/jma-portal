@@ -22,7 +22,7 @@ import {
   sha256Hex,
   unlockSlot
 } from "./crypto.js";
-import { LIMITS, sanitizeFileName, typeFor, verifyContent } from "./files.js";
+import { EXTENSION_PATTERN, LIMITS, sanitizeFileName, verifyContent } from "./files.js";
 
 const KEYRING_FILE = "keyring.json";
 const CATALOG_FILE = "catalog.bin";
@@ -136,7 +136,7 @@ export class VaultStore {
       for (const file of Array.isArray(raw.files) ? raw.files.slice(0, LIMITS.maxFilesPerEntry) : []) {
         const extension = String(file && file.ext || "").toLowerCase();
         const size = Number(file && file.size);
-        if (!file || !FILE_ID.test(file.id) || !typeFor(extension) || !/^[0-9a-f]{64}$/.test(file.sha256)
+        if (!file || !FILE_ID.test(file.id) || !EXTENSION_PATTERN.test(extension) || !/^[0-9a-f]{64}$/.test(file.sha256)
           || !Number.isInteger(size) || size <= 0 || size > LIMITS.maxFileBytes) {
           continue;
         }

@@ -11,8 +11,8 @@ import {
 } from "./crypto.js";
 import { GitHubRepository } from "./github.js";
 import {
-  ACCEPT_ATTRIBUTE,
   LIMITS,
+  decodeText,
   formatBytes,
   inspectFile,
   extensionOf,
@@ -36,6 +36,9 @@ import {
 const SESSION_KEY = "jma-vault-key";
 const AUTHOR_KEY = "jma-author-name";
 const TOKEN_KEY = "jma-admin-token";
+
+// Tipos con botón de filtro propio; el filtro "Otros" reúne todos los demás.
+const FILTER_KINDS = new Set(["word", "excel", "powerpoint", "pdf", "image", "archive"]);
 
 // Sin servidor propio no se puede fijar frame-ancestors, así que la página se
 // niega a funcionar dentro de un marco ajeno.
@@ -245,8 +248,8 @@ function matchesFilter(entry) {
     return entry.source === state.filter;
   }
   return entry.files.some((file) => {
-    const type = typeFor(file.ext);
-    return type && type.kind === state.filter;
+    const kind = typeFor(file.ext).kind;
+    return state.filter === "other" ? !FILTER_KINDS.has(kind) : kind === state.filter;
   });
 }
 
@@ -270,7 +273,11 @@ function createFileRow(entry, file) {
   const badge = document.createElement("span");
   badge.className = "file-badge";
   const type = typeFor(file.ext);
-  badge.textContent = type ? type.label : file.ext.toUpperCase();
+  badge.textContent = type.label;
+  if (type.risky) {
+    badge.classList.add("is-risky");
+    badge.title = "Puede ejecutar código al abrirse";
+  }
 
   const name = document.createElement("span");
   name.className = "file-name";
@@ -283,7 +290,7 @@ function createFileRow(entry, file) {
 
   const actions = document.createElement("span");
   actions.className = "file-actions";
-  if (type && type.viewable) {
+  if (type.viewable) {
     const view = document.createElement("button");
     view.type = "button";
     view.className = "card-action";
@@ -400,13 +407,16 @@ async function decryptFile(entry, file) {
 }
 
 async function downloadFile(entry, file, button) {
+  const type = typeFor(file.ext);
+  if (type.risky && !window.confirm(`"${file.name}" puede ejecutar código al abrirse (página web, programa o documento con macros). Descárgalo solo si confías en quien lo guardó. ¿Continuar?`)) {
+    return;
+  }
   const original = button.textContent;
   button.disabled = true;
   button.textContent = "Descifrando…";
   try {
     const bytes = await decryptFile(entry, file);
-    const type = typeFor(file.ext);
-    const url = URL.createObjectURL(new Blob([bytes], { type: type ? type.mime : "application/octet-stream" }));
+    const url = URL.createObjectURL(new Blob([bytes], { type: type.mime }));
     const link = document.createElement("a");
     link.href = url;
     link.download = file.name;
@@ -498,7 +508,7 @@ function openEntryViewer(entry) {
 async function openFileViewer(entry, file) {
   releaseUrls();
   elements.viewerTitle.textContent = file.name;
-  elements.viewerType.textContent = typeFor(file.ext) ? typeFor(file.ext).label : file.ext.toUpperCase();
+  elements.viewerType.textContent = typeFor(file.ext).label;
   elements.viewerTopic.textContent = `${entry.author} · ${formatDate(entry.createdAt, true)}`;
   elements.viewerBody.replaceChildren();
   elements.viewerLoading.hidden = false;
@@ -513,7 +523,7 @@ async function openFileViewer(entry, file) {
       image.alt = file.name;
       elements.viewerBody.append(image);
     } else {
-      const text = new TextDecoder().decode(bytes);
+      const text = decodeText(bytes);
       if (file.ext === "md") {
         renderMarkdown(elements.viewerBody, text);
       } else {
@@ -579,7 +589,7 @@ function exportRegistry() {
       continue;
     }
     for (const file of entry.files) {
-      rows.push([...base, file.name, (typeFor(file.ext) || { label: file.ext }).label, file.size, file.sha256]);
+      rows.push([...base, file.name, typeFor(file.ext).label, file.size, file.sha256]);
     }
   }
   const csv = "﻿" + rows.map((row) => row.map(csvCell).join(";")).join("\r\n");
@@ -602,7 +612,7 @@ function renderPendingFiles() {
     preview.className = "image-preview";
     const type = typeFor(item.ext);
 
-    if (type.kind === "image") {
+    if (item.previewUrl) {
       const image = document.createElement("img");
       image.src = item.previewUrl;
       image.alt = item.name;
@@ -666,14 +676,18 @@ async function addFiles(fileList) {
       file,
       name: file.name,
       ext: inspection.extension,
-      previewUrl: inspection.type.kind === "image" ? URL.createObjectURL(file) : ""
+      previewUrl: inspection.type.viewable && inspection.type.kind === "image" ? URL.createObjectURL(file) : ""
     });
   }
   elements.fileInput.value = "";
   renderPendingFiles();
+  const ready = state.pendingFiles.length;
+  const risky = state.pendingFiles.some((item) => typeFor(item.ext).risky)
+    ? " Incluye archivos que pueden ejecutar código: al descargarlos se pedirá confirmación."
+    : "";
   setMessage(
     elements.uploadMessage,
-    rejected.length ? rejected[0] : `${state.pendingFiles.length} archivo${state.pendingFiles.length === 1 ? "" : "s"} listo${state.pendingFiles.length === 1 ? "" : "s"}.`,
+    rejected.length ? rejected[0] : `${ready} archivo${ready === 1 ? "" : "s"} listo${ready === 1 ? "" : "s"}.${risky}`,
     rejected.length ? "error" : ""
   );
 }
@@ -1273,7 +1287,6 @@ async function initialize() {
   elements.headerOwner.textContent = config.owner;
   elements.heroOwner.textContent = config.owner;
   elements.footerYear.textContent = String(new Date().getFullYear());
-  elements.fileInput.accept = ACCEPT_ATTRIBUTE;
   elements.uploadAuthor.value = safeStorage(localStorage, "get", AUTHOR_KEY) || "";
   bindEvents();
   startIdleWatch();
