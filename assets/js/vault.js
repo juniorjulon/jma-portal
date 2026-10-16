@@ -21,8 +21,8 @@ import {
   sealJson,
   sha256Hex,
   unlockSlot
-} from "./crypto.js";
-import { EXTENSION_PATTERN, LIMITS, sanitizeFileName, verifyContent } from "./files.js";
+} from "./crypto.js?v=20261016";
+import { EXTENSION_PATTERN, LIMITS, sanitizeFileName, verifyContent } from "./files.js?v=20261016";
 
 const KEYRING_FILE = "keyring.json";
 const CATALOG_FILE = "catalog.bin";

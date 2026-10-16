@@ -1,15 +1,15 @@
 // Interfaz del portal. No guarda ningún dato en claro: pide la clave, descifra
 // en memoria y vuelve a cifrar todo lo que se sube.
 
-import config from "./config.js";
+import config from "./config.js?v=20261016";
 import {
   exportContentKey,
   generatePassphrase,
   importExportedKey,
   normalizePassword,
   validateNewPassword
-} from "./crypto.js";
-import { GitHubRepository } from "./github.js";
+} from "./crypto.js?v=20261016";
+import { GitHubRepository } from "./github.js?v=20261016";
 import {
   LIMITS,
   decodeText,
@@ -19,7 +19,7 @@ import {
   screenshotName,
   stripJpegMetadata,
   typeFor
-} from "./files.js";
+} from "./files.js?v=20261016";
 import {
   VaultError,
   VaultStore,
@@ -31,7 +31,7 @@ import {
   sanitizeContributionConfig,
   saveContributionSettings,
   unlockVault
-} from "./vault.js";
+} from "./vault.js?v=20261016";
 
 const SESSION_KEY = "jma-vault-key";
 const AUTHOR_KEY = "jma-author-name";

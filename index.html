@@ -8,10 +8,13 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Junior's Market Analysis</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <!-- GitHub Pages deja que el navegador guarde cada archivo 10 minutos. El ?v= obliga a
+       descargar la versión nueva: cámbialo aquí y en los import de assets/js cada vez que
+       se modifique el código (mismo valor en todos). -->
+  <link rel="stylesheet" href="assets/styles.css?v=20261016">
   <script src="assets/vendor/marked.umd.js" defer></script>
   <script src="assets/vendor/purify.min.js" defer></script>
-  <script type="module" src="assets/js/app.js"></script>
+  <script type="module" src="assets/js/app.js?v=20261016"></script>
 </head>
 <body class="is-locked">
   <section class="lock-screen" id="lockScreen" aria-labelledby="lockTitle">
